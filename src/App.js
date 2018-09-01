@@ -96,6 +96,25 @@ const gameState = ({fields}) => {
   };
 };
 
+const statusBar = ({gameOver, winner, player, final}) => {
+    if (gameOver) {
+      const text = winner>0 
+        ? "Player 1 won" 
+        : "Player 2 won";
+      return <div> {text} </div>
+    }
+
+    if (!final) {
+      return <div> Computing... </div>
+    }
+  
+    return (
+      <div style={{color:colors[player+1]}}>
+        Player {player+1}
+      </div>
+    )
+  }
+
 
 //console.log(graph)
 
@@ -154,24 +173,17 @@ class App extends Component {
     }
   }
 
-  statusBar({gameOver, winner, player, final}) {
-    if (gameOver) {
-      const text = winner>0 
-        ? "Player 1 won" 
-        : "Player 2 won";
-      return <div> {text} </div>
-    }
-
-    if (!final) {
-      return <div> Computing... </div>
-    }
-  
+  settings() {
     return (
-      <div style={{color:colors[player+1]}}>
-        Player {player+1}
-      </div>
-    )
+        <div>
+          <h2> Settings </h2>
+          <input name="n" type="number" defaultValue={3} min={3} max={10} ref={this.inputs[0]} />
+          <input name="m" type="number" defaultValue={3} min={3} max={10} ref={this.inputs[1]} />
+          <button onClick={()=>this.restart()}> Restart </button>
+        </div>
+    );
   }
+
 
   render() {
     const score = getScore(this.state.board.fields);
@@ -186,14 +198,8 @@ class App extends Component {
           flexDirection: "column"
           
         }}>
-        
-        <div>
-          <h2> Settings </h2>
-          <input name="n" type="number" defaultValue={3} min={3} max={10} ref={this.inputs[0]} />
-          <input name="m" type="number" defaultValue={3} min={3} max={10} ref={this.inputs[1]} />
-          <button onClick={()=>this.restart()}> Restart </button>
-        </div>
-        {this.statusBar({gameOver, winner, player, final})}
+        {this.settings()}
+        {statusBar({gameOver, winner, player, final})}
         <div>
           <span> scores: </span>
           <span style={{color:colors[1]}}>{score[0]}</span>
